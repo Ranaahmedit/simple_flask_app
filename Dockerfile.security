@@ -1,0 +1,8 @@
+FROM python:3.11-slim
+
+RUN pip install bandit safety pip-audit
+
+WORKDIR /app
+COPY . /app
+
+CMD ["sh", "-c", "bandit -r . && safety check && pip-audit"]

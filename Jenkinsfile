@@ -9,20 +9,18 @@ pipeline {
     }
 
     stages {
-        stage('Setup') {
+        stage('Build Security Image') {
             steps {
                 script {
-                    sh 'pip install bandit safety pip-audit'
+                    sh 'docker build -t security-image -f Dockerfile.security .'
                 }
             }
         }
 
-        stage('Security Tests') {
+        stage('Run Security Tests') {
             steps {
                 script {
-                    sh 'bandit -r simple_flask_app'
-                    sh 'safety check'
-                    sh 'pip-audit'
+                    sh 'docker run --rm security-image'
                 }
             }
         }
@@ -58,13 +56,5 @@ pipeline {
             }
         }
     }
-
-    post {
-        always {
-            cleanWs()
-        }
-    }
 }
-
-
 
